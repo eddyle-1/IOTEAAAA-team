@@ -2,4 +2,3 @@ Minh 123 Male
 Thinh 456 Male
 Duc 567 Male
 Nam 789 Male
-John 1234 M
