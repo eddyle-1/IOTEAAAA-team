@@ -13,7 +13,7 @@
 
     <div class="container" id="container">
         <div class="form-container sign-up">
-            <form class="signup" action = "/save" method = "POST">
+            <form class="signup" id="signupForm">
                 <h1>Create Account</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -21,15 +21,15 @@
                     <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
-                <span>or use your email for registeration</span>
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button>Sign Up</button>
+                <span>or use your email for registration</span>
+                <input type="text" placeholder="Name" required id="signupName">
+                <input type="email" placeholder="Email" required id="signupEmail">
+                <input type="password" placeholder="Password" required id="signupPassword">
+                <button type="submit">Sign Up</button>
             </form>
         </div>
         <div class="form-container sign-in">
-            <form class="login" action = "/check" method =  "POST">
+            <form class="login" id="loginForm">
                 <h1>Sign In</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -38,10 +38,10 @@
                     <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
                 </div>
                 <span>or use your email password</span>
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
+                <input type="email" placeholder="Email" required id="email">
+                <input type="password" placeholder="Password" required id="password">
                 <a href="#">Forget Your Password?</a>
-                <button>Sign In</button>
+                <button type="submit">Sign In</button>
             </form>
         </div>
         <div class="toggle-container">
@@ -60,7 +60,111 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Add toggle functionality
+        const container = document.getElementById('container');
+        const registerBtn = document.getElementById('register');
+        const loginBtn = document.getElementById('login');
+
+        registerBtn.addEventListener('click', () => {
+            container.classList.add('active');
+        });
+
+        loginBtn.addEventListener('click', () => {
+            container.classList.remove('active');
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                // Get user's location
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+
+                // Login request
+                const response = await fetch('http://localhost:5000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store user data in sessionStorage
+                    sessionStorage.setItem('userData', JSON.stringify(data));
+                    
+                    // Redirect based on role
+                    if (data.role === 'student') {
+                        window.location.href = 'home.html';
+                    } else if (data.role === 'manager') {
+                        window.location.href = 'teacher-home.html';
+                    }
+                } else {
+                    alert('Invalid credentials');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error during login. Please try again.');
+            }
+        });
+
+        // Add signup form handler
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            try {
+                // Get user's location
+                const position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                });
+
+                // Signup request
+                const response = await fetch('http://localhost:5000/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Account created successfully! Please login.');
+                    // Switch to login form
+                    document.getElementById('container').classList.remove('active');
+                } else {
+                    alert(data.message || 'Error creating account');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error during signup. Please try again.');
+            }
+        });
+    </script>
 </body>
 
 </html>
