@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Teacher Attendance Dashboard</title>
+    <style>
+        /* Additional styles for homepage */
+        .navbar {
+            background-color: #fff;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #007bff;
+        }
+
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .class-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .class-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .class-header h2 {
+            color: #333;
+            margin: 0;
+        }
+
+        .date-display {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .class-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .class-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+
+        .class-card:hover {
+            transform: translateX(5px);
+        }
+
+        .class-info {
+            flex: 1;
+        }
+
+        .class-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .class-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .attendance-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .action-card i {
+            font-size: 2rem;
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+
+        .action-card h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .action-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">Teacher Dashboard</div>
+            <div class="nav-links">
+                <a href="#"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="#"><i class="fas fa-calendar"></i> Schedule</a>
+                <a href="#"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <section class="welcome-section">
+            <h1>Welcome, Professor Name</h1>
+            <p>Manage your class attendance for today</p>
+        </section>
+
+        <section class="class-section">
+            <div class="class-header">
+                <h2>Today's Classes</h2>
+                <div class="date-display">
+                    <i class="far fa-calendar"></i> March 24, 2024
+                </div>
+            </div>
+            <div class="class-list">
+                <div class="class-card">
+                    <div class="class-info">
+                        <div class="class-name">Mathematics 101</div>
+                        <div class="class-time">9:00 AM - 10:30 AM</div>
+                    </div>
+                    <div class="attendance-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">25</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                        <div class="stat-number">30</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">Take Attendance</button>
+                        <button class="btn btn-secondary">View Details</button>
+                    </div>
+                </div>
+                <div class="class-card">
+                    <div class="class-info">
+                        <div class="class-name">Advanced Physics</div>
+                        <div class="class-time">11:00 AM - 12:30 PM</div>
+                    </div>
+                    <div class="attendance-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">18</div>
+                            <div class="stat-label">Present</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Absent</div>
+                        </div>
+                        <div class="stat-number">21</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary">Take Attendance</button>
+                        <button class="btn btn-secondary">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="quick-actions">
+            <div class="action-card">
+                <i class="fas fa-file-export"></i>
+                <h3>Export Reports</h3>
+                <p>Download attendance reports</p>
+            </div>
+            <div class="action-card">
+                <i class="fas fa-users"></i>
+                <h3>Student List</h3>
+                <p>View all enrolled students</p>
+            </div>
+            <div class="action-card">
+                <i class="fas fa-cog"></i>
+                <h3>Settings</h3>
+                <p>Configure attendance settings</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add current date
+        document.querySelector('.date-display').innerHTML = 
+            `<i class="far fa-calendar"></i> ${new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            })}`;
+    </script>
+</body>
+</html> 
